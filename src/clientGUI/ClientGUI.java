@@ -9,17 +9,24 @@ import javax.swing.*;
 
 public class ClientGUI extends JFrame {
     
+    MainPanel mainPanel;
+    JTextArea informationTA;
+    
     public ClientGUI(String title) {
         super(title);
         setSize(500, 500);
         this.setResizable(false);
         setLayout(new BorderLayout());
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
         setVisible(true);
         
-        MainPanel mainPanel = new MainPanel(getAvailableWidth(), getAvailableHeight());
+        mainPanel = new MainPanel(getAvailableWidth(), getAvailableHeight());
+        informationTA = new JTextArea("Wibble");
         
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        mainPanel.add(informationTA);
+        
+        add(mainPanel, BorderLayout.SOUTH);        
     }
     
     
@@ -47,10 +54,6 @@ public class ClientGUI extends JFrame {
         public MainPanel(int width, int height) // given
         {
             setSize(width, height);
-            
-            textArea = new JTextArea("Wibble");
-            
-            add(textArea);
         }
 
         /**
