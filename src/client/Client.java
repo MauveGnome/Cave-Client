@@ -19,7 +19,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client
+public class Client extends Thread
 {
     //Streams used for communicating with server
     private InputStream is;
@@ -31,6 +31,7 @@ public class Client
      * This is the client's main method - it performs a single
      * interaction with the server using the processHello method
      */
+    @Override
     public void run()
     {
         //set up connection to the server

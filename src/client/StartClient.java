@@ -15,6 +15,6 @@ public class StartClient
    {
       ClientGUI gui = new ClientGUI("CAVE");
       Client client1 = new Client();
-      client1.run();
+      client1.start();
    }
 }
