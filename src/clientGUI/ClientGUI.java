@@ -45,7 +45,7 @@ public class ClientGUI extends JFrame {
         return getHeight() - getInsets().top - getInsets().bottom;
     }
     
-        /**
+    /**
      * Inner class to hold the option button area.
      */
     private class OptionPanel extends JPanel {
@@ -141,6 +141,7 @@ public class ClientGUI extends JFrame {
          * This method is invoked automatically when repaint occurs in
          * the outer container
          */
+        @Override
         public void paintComponent(Graphics g)
         {
             super.paintComponent(g);
