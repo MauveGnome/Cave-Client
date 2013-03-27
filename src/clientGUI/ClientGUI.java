@@ -4,7 +4,10 @@ package clientGUI;
  * @author Sam Beed B0632953
  */
 
+import client.Client;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class ClientGUI extends JFrame {
@@ -12,14 +15,16 @@ public class ClientGUI extends JFrame {
     OptionPanel optionPanel;
     VotePanel votePanel;
     InfoPanel infoPanel;
+    Client myClient;
     
-    public ClientGUI(String title) {
+    public ClientGUI(String title, Client c) {
         super(title);
         setSize(500, 500);
         this.setResizable(false);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
+        myClient = c;    
         setVisible(true);
         
         optionPanel = new OptionPanel(getAvailableWidth(), getAvailableHeight() / 3);
@@ -68,6 +73,11 @@ public class ClientGUI extends JFrame {
             add(getVotesButton);
             add(submitButton);
             add(quitButton);
+            
+            connectButton.addActionListener(new ButtonWatcher());
+            getVotesButton.addActionListener(new ButtonWatcher());
+            submitButton.addActionListener(new ButtonWatcher());
+            quitButton.addActionListener(new ButtonWatcher());
         }
       
         /**
@@ -77,6 +87,7 @@ public class ClientGUI extends JFrame {
         public void paintComponent(Graphics g)
         {
             super.paintComponent(g);
+            
         }
     }
         
@@ -149,4 +160,31 @@ public class ClientGUI extends JFrame {
 
     }
     
+    /**
+     * Inner class to watch buttons.
+     */
+    private class ButtonWatcher implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Object source = e.getSource();
+            
+            if (source == optionPanel.connectButton) {
+                myClient.connectToServer();
+            }
+            
+            if (source == optionPanel.getVotesButton) {
+                
+            }
+            
+            if (source == optionPanel.submitButton) {
+                
+            }
+            
+            if (source == optionPanel.quitButton) {
+                myClient.quit();
+            }
+        }
+        
+    }
 }

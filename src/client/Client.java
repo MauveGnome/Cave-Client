@@ -26,6 +26,8 @@ public class Client extends Thread
     private BufferedReader fromServer;
     private Socket socket;    // Socket to server
     private static final int SERVER_PORT_NUMBER = 3000;
+    private boolean running = true;
+    public String output;
 
     /**
      * This is the client's main method - it performs a single
@@ -34,27 +36,26 @@ public class Client extends Thread
     @Override
     public void run()
     {
-        //set up connection to the server
-        try
-        {
-            connectToServer();
-
-            processHello();
-
-            closeStreams();
-            socket.close();
+        while (running) {
+            
         }
-        catch (IOException e)
-        {
+        
+        try {
+            closeStreams();
+            socket.close();   
+        }
+        catch (IOException e) {
             System.out.println("Exception in client run " + e);
         }
+        
+        
     }
 
     /*
      * This method creates a socket on the local host to
      * the specified port number, for communications with the server
      */
-    private void connectToServer()
+    public void connectToServer()
     {
         try
         {
@@ -95,4 +96,11 @@ public class Client extends Thread
         String messageFromServer = fromServer.readLine();
         System.out.println("Server said: " + messageFromServer); //display message
     }
-} // end class
+    
+    /**
+     * Ends the program.
+     */
+    public void quit() {
+        running = false;
+    }
+}
