@@ -8,14 +8,16 @@ import client.Client;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 public class ClientGUI extends JFrame {
     
-    OptionPanel optionPanel;
-    VotePanel votePanel;
-    InfoPanel infoPanel;
-    Client myClient;
+    private OptionPanel optionPanel;
+    private VotePanel votePanel;
+    private InfoPanel infoPanel;
+    private Client myClient;
     
     public ClientGUI(String title, Client c) {
         super(title);
@@ -25,15 +27,16 @@ public class ClientGUI extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
         myClient = c;    
-        setVisible(true);
         
-        optionPanel = new OptionPanel(getAvailableWidth(), getAvailableHeight() / 3);
-        votePanel = new VotePanel(getAvailableWidth(), getAvailableHeight() / 3);
-        infoPanel = new InfoPanel(getAvailableWidth(), getAvailableHeight() / 3);
+        optionPanel = new OptionPanel();
+        votePanel = new VotePanel();
+        infoPanel = new InfoPanel();
         
         add(optionPanel, BorderLayout.NORTH);
         add(votePanel, BorderLayout.CENTER);
-        add(infoPanel, BorderLayout.SOUTH);        
+        add(infoPanel, BorderLayout.SOUTH);
+        
+        setVisible(true);
     }
     
     /**
@@ -60,8 +63,7 @@ public class ClientGUI extends JFrame {
         JButton submitButton;
         JButton quitButton;
         
-        public OptionPanel(int width, int height) {
-            setSize(width, height);
+        public OptionPanel() {
             setLayout(new GridLayout(1,4));      
             
             connectButton = new JButton("Connect");
@@ -88,6 +90,13 @@ public class ClientGUI extends JFrame {
         {
             super.paintComponent(g);
             
+            if (myClient.isConnected()) {
+                connectButton.setBackground(Color.GREEN);
+            }
+            else {
+                connectButton.setBackground(Color.RED);
+            }
+            
         }
     }
         
@@ -100,8 +109,7 @@ public class ClientGUI extends JFrame {
         JList responseList;
         String[] testList = new String[]{"one","two","three","four"};           //REMOVE
         
-        public VotePanel(int width, int height) {
-            setSize(width, height);
+        public VotePanel() {
             setLayout(new GridLayout(1,2));
             
             voteList = new JList(testList);                                     //REMOVE TESTLIST
@@ -124,17 +132,16 @@ public class ClientGUI extends JFrame {
         }
     }
     
-        /**
+    /**
      * Inner class describing the main panel.
      */
     private class InfoPanel extends JPanel {
         
         JTextArea textArea;
         
-        public InfoPanel(int width, int height) {
-            setSize(width, height);
+        public InfoPanel() {
             setLayout(new GridLayout(1,1));
-            
+                        
             textArea = new JTextArea("Welcome to the Colaboration and "
                                      + "Voting Environment\n", 10, 1);
             JScrollPane scroll = new JScrollPane(textArea);
@@ -142,12 +149,11 @@ public class ClientGUI extends JFrame {
             
             add(scroll);
         }
-
-        public void setText(String text) {
-            textArea.setText(text);
-            textArea.repaint();
-        }
         
+        public void addOutput(String newOutput) {
+            textArea.append(newOutput + "\n");
+        }
+                
         /**
          * This method is invoked automatically when repaint occurs in
          * the outer container
@@ -155,7 +161,7 @@ public class ClientGUI extends JFrame {
         @Override
         public void paintComponent(Graphics g)
         {
-            super.paintComponent(g);
+            super.paintComponent(g);            
         }
 
     }
@@ -184,7 +190,12 @@ public class ClientGUI extends JFrame {
             if (source == optionPanel.quitButton) {
                 myClient.quit();
             }
+            
+            optionPanel.repaint();
+            votePanel.repaint();
+            infoPanel.repaint();
         }
         
     }
+    
 }

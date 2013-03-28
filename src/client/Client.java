@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.*;
 
 public class Client extends Thread
 {
@@ -26,16 +26,24 @@ public class Client extends Thread
     private BufferedReader fromServer;
     private Socket socket;    // Socket to server
     private static final int SERVER_PORT_NUMBER = 3000;
-    private boolean running = true;
-    public String output;
+    private boolean connected;
+    private boolean running;
 
+    /**
+     * Constructor
+     */
+    public Client() {
+        connected = false;
+        running = true;
+    }
+    
     /**
      * This is the client's main method - it performs a single
      * interaction with the server using the processHello method
      */
     @Override
     public void run()
-    {
+    {     
         while (running) {
             
         }
@@ -55,19 +63,17 @@ public class Client extends Thread
      * This method creates a socket on the local host to
      * the specified port number, for communications with the server
      */
-    public void connectToServer()
-    {
-        try
-        {
+    public void connectToServer() {
+        try {
             //this is a portable way of getting the local host address
             final InetAddress SERVER_ADDRESS = InetAddress.getLocalHost();
             System.out.println("Attempting to contact " + SERVER_ADDRESS);
 
             socket = new Socket(SERVER_ADDRESS, SERVER_PORT_NUMBER);
             openStreams();
+            connected = true;
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             String ls = System.getProperty("line.separator");
             System.out.println(ls + "Trouble contacting the server: " + e);
             System.out.println("Perhaps you need to start the server?");
@@ -98,9 +104,17 @@ public class Client extends Thread
     }
     
     /**
+     * Returns true if a connection is currently up.
+     * @return Connection status
+     */
+    public boolean isConnected() {
+        return connected;
+    }
+    
+    /**
      * Ends the program.
      */
     public void quit() {
-        running = false;
+        System.exit(0);
     }
 }
