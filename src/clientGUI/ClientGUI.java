@@ -90,12 +90,7 @@ public class ClientGUI extends JFrame {
         {
             super.paintComponent(g);
             
-            if (myClient.isConnected()) {
-                connectButton.setBackground(Color.GREEN);
-            }
-            else {
-                connectButton.setBackground(Color.RED);
-            }
+
             
         }
     }
@@ -176,7 +171,16 @@ public class ClientGUI extends JFrame {
             Object source = e.getSource();
             
             if (source == optionPanel.connectButton) {
-                myClient.connectToServer();
+                if (!myClient.isConnected()) {
+                    if (myClient.connectToServer()) {
+                        optionPanel.connectButton.setText("Disconnect");
+                        optionPanel.connectButton.setBackground(Color.GREEN);
+                        infoPanel.addOutput("Connected");
+                    }
+                    else {
+                        infoPanel.addOutput("Failed to connect");
+                    }
+                }
             }
             
             if (source == optionPanel.getVotesButton) {
@@ -195,7 +199,6 @@ public class ClientGUI extends JFrame {
             votePanel.repaint();
             infoPanel.repaint();
         }
-        
     }
-    
+        
 }

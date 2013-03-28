@@ -55,15 +55,13 @@ public class Client extends Thread
         catch (IOException e) {
             System.out.println("Exception in client run " + e);
         }
-        
-        
     }
 
     /*
      * This method creates a socket on the local host to
      * the specified port number, for communications with the server
      */
-    public void connectToServer() {
+    public boolean connectToServer() {
         try {
             //this is a portable way of getting the local host address
             final InetAddress SERVER_ADDRESS = InetAddress.getLocalHost();
@@ -72,14 +70,17 @@ public class Client extends Thread
             socket = new Socket(SERVER_ADDRESS, SERVER_PORT_NUMBER);
             openStreams();
             connected = true;
+            return true;
         }
         catch (IOException e) {
             String ls = System.getProperty("line.separator");
             System.out.println(ls + "Trouble contacting the server: " + e);
             System.out.println("Perhaps you need to start the server?");
             System.out.println("Make sure they're talking on the same port?" + ls);
+            return false;
         }
     }
+    
 
     // open streams for communicating with the server
     private void openStreams() throws IOException
