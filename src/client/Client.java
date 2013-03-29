@@ -27,14 +27,14 @@ public class Client extends Thread
     private Socket socket;    // Socket to server
     private static final int SERVER_PORT_NUMBER = 3000;
     private boolean connected;
-    private boolean running;
+    private boolean keepRunning;
 
     /**
      * Constructor
      */
     public Client() {
         connected = false;
-        running = true;
+        keepRunning = true;
     }
     
     /**
@@ -44,7 +44,7 @@ public class Client extends Thread
     @Override
     public void run()
     {     
-        while (running) {
+        while (keepRunning) {
             
         }
         
