@@ -11,23 +11,24 @@ package client;
  * @author Sam Beed B0632953
  */
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
 import java.util.*;
 
 public class Client extends Thread
 {
     //Streams used for communicating with server
     private InputStream is;
+    private OutputStream os;
+    private PrintWriter toServer;
     private BufferedReader fromServer;
+            
     private Socket socket;    // Socket to server
     private static final int SERVER_PORT_NUMBER = 3000;
     private boolean connected;
     private boolean keepRunning;
+    
+    private Map<String, Map<String, Integer>> questions;
 
     /**
      * Constructor
@@ -43,14 +44,13 @@ public class Client extends Thread
      */
     @Override
     public void run()
-    {     
-        while (keepRunning) {
-            
-        }
-        
+    {        
         try {
-            closeStreams();
-            socket.close();   
+            while (keepRunning) {
+                processServerMessage();
+            }
+        
+            quit();
         }
         catch (IOException e) {
             System.out.println("Exception in client run " + e);
@@ -85,20 +85,37 @@ public class Client extends Thread
     // open streams for communicating with the server
     private void openStreams() throws IOException
     {
+        final boolean AUTO_FLUSH = true;
         is = socket.getInputStream();
+        os = socket.getOutputStream();
+        toServer = new PrintWriter(os, AUTO_FLUSH);
         fromServer = new BufferedReader(new InputStreamReader(is));
+        
+        System.out.println("...Streams opened");
     }
 
     // close streams to server
     private void closeStreams() throws IOException
     {
+        toServer.close();
         fromServer.close();
+        os.close();
         is.close();
+        
+        System.out.println("...Streams closed down");
     }
 
+    /**
+     * Sends a message to the server.
+     * @param request 
+     */
+    private void sendToServer(String request) {
+        toServer.println(request);
+    }
+    
     //An example method that completes a single interaction with the server
     //In this case, the client doesn't say anything to the server
-    private void processHello() throws IOException
+    private void processServerMessage() throws IOException
     {
         String messageFromServer = fromServer.readLine();
         System.out.println("Server said: " + messageFromServer); //display message
@@ -113,9 +130,19 @@ public class Client extends Thread
     }
     
     /**
+     * Requests the questions.
+     */
+    public void requestQuestions() {
+        
+    }
+
+    /**
      * Ends the program.
      */
-    public void quit() {
+    public void quit() throws IOException {
+        toServer.println("QUIT");
+        closeStreams();
+        socket.close();
         System.exit(0);
     }
 }

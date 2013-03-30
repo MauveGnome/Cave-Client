@@ -8,8 +8,7 @@ import client.Client;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.IOException;
 import javax.swing.*;
 
 public class ClientGUI extends JFrame {
@@ -86,6 +85,7 @@ public class ClientGUI extends JFrame {
          * This method is invoked automatically when repaint occurs in
          * the outer container
          */
+        @Override
         public void paintComponent(Graphics g)
         {
             super.paintComponent(g);
@@ -121,6 +121,7 @@ public class ClientGUI extends JFrame {
          * This method is invoked automatically when repaint occurs in
          * the outer container
          */
+        @Override
         public void paintComponent(Graphics g)
         {
             super.paintComponent(g);
@@ -192,7 +193,12 @@ public class ClientGUI extends JFrame {
             }
             
             if (source == optionPanel.quitButton) {
-                myClient.quit();
+                try {
+                    myClient.quit();
+                }
+                catch (IOException ex) {
+                    infoPanel.addOutput("Error shutting down: " + ex.getMessage());
+                }
             }
             
             optionPanel.repaint();
