@@ -170,35 +170,35 @@ public class ClientGUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
-            
-            if (source == optionPanel.connectButton) {
-                if (!myClient.isConnected()) {
-                    if (myClient.connectToServer()) {
-                        optionPanel.connectButton.setText("Disconnect");
-                        optionPanel.connectButton.setBackground(Color.GREEN);
-                        infoPanel.addOutput("Connected");
-                    }
-                    else {
-                        infoPanel.addOutput("Failed to connect");
+            try {
+                if (source == optionPanel.connectButton) {
+                    if (!myClient.isConnected()) {
+                        if (myClient.connectToServer()) {
+                            optionPanel.connectButton.setText("Disconnect");
+                            optionPanel.connectButton.setBackground(Color.GREEN);
+                            infoPanel.addOutput("Connected");
+                        }
+                        else {
+                            infoPanel.addOutput("Failed to connect");
+                        }
                     }
                 }
-            }
-            
-            if (source == optionPanel.getVotesButton) {
-                
-            }
-            
-            if (source == optionPanel.submitButton) {
-                
-            }
-            
-            if (source == optionPanel.quitButton) {
-                try {
+
+                if (source == optionPanel.getVotesButton) {
+                    myClient.sendToServer("GET_VOTES");
+                }
+
+                if (source == optionPanel.submitButton) {
+                    myClient.sendToServer("SUBMIT");
+                }
+
+                if (source == optionPanel.quitButton) {
                     myClient.quit();
+                    
                 }
-                catch (IOException ex) {
-                    infoPanel.addOutput("Error shutting down: " + ex.getMessage());
-                }
+            }
+            catch (IOException ex) {
+                infoPanel.addOutput("IO error: " + ex.getMessage());
             }
             
             optionPanel.repaint();

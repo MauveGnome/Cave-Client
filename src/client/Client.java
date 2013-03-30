@@ -47,7 +47,7 @@ public class Client extends Thread
     {        
         try {
             while (keepRunning) {
-                processServerMessage();
+                
             }
         
             quit();
@@ -109,8 +109,9 @@ public class Client extends Thread
      * Sends a message to the server.
      * @param request 
      */
-    private void sendToServer(String request) {
+    public void sendToServer(String request) throws IOException {
         toServer.println(request);
+        processServerMessage();
     }
     
     //An example method that completes a single interaction with the server
