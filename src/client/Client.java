@@ -20,6 +20,7 @@ public class Client extends Thread
     //Streams used for communicating with server
     private InputStream is;
     private OutputStream os;
+    private ObjectInputStream objIS;
     private PrintWriter toServer;
     private BufferedReader fromServer;
             
@@ -28,7 +29,7 @@ public class Client extends Thread
     private boolean connected;
     private boolean keepRunning;
     
-    private Map<String, Map<String, Integer>> questions;
+    private HashMap<String, Map<String, Integer>> questions;
 
     /**
      * Constructor
@@ -88,6 +89,7 @@ public class Client extends Thread
         final boolean AUTO_FLUSH = true;
         is = socket.getInputStream();
         os = socket.getOutputStream();
+        objIS = new ObjectInputStream(is);
         toServer = new PrintWriter(os, AUTO_FLUSH);
         fromServer = new BufferedReader(new InputStreamReader(is));
         
@@ -99,6 +101,7 @@ public class Client extends Thread
     {
         toServer.close();
         fromServer.close();
+        objIS.close();
         os.close();
         is.close();
         
@@ -111,7 +114,12 @@ public class Client extends Thread
      */
     public void sendToServer(String request) throws IOException {
         toServer.println(request);
-        processServerMessage();
+        if (request.equalsIgnoreCase("GET_VOTES")) {
+            getVotes();
+        }
+        else {
+            processServerMessage();
+        }
     }
     
     //An example method that completes a single interaction with the server
@@ -120,6 +128,37 @@ public class Client extends Thread
     {
         String messageFromServer = fromServer.readLine();
         System.out.println("Server said: " + messageFromServer); //display message
+    }
+    
+    /**
+     * 
+     */
+    private void getVotes() {
+        try {
+            questions = (HashMap<String, Map<String, Integer>>) objIS.readObject();
+        }
+        catch (IOException ex) {
+            System.out.println("IO Exception : " + ex.getMessage());
+        }
+        catch (ClassNotFoundException ex) {
+            System.out.println("ClassNotFound Exception : " + ex.getMessage());
+        }
+    }
+    
+    /**
+     * 
+     */
+    public Set<String> getQuestions() {
+        return questions.keySet();
+    }
+    
+    /**
+     * 
+     * @param question
+     * @return 
+     */
+    public Map<String, Integer> getAnswers(String question) {
+       return questions.get(question); 
     }
     
     /**

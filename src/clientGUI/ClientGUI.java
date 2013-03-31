@@ -8,8 +8,15 @@ import client.Client;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.*;
+import java.util.*;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class ClientGUI extends JFrame {
     
@@ -102,21 +109,35 @@ public class ClientGUI extends JFrame {
         
         JList voteList;
         JList responseList;
-        String[] testList = new String[]{"one","two","three","four"};           //REMOVE
         
         public VotePanel() {
             setLayout(new GridLayout(1,2));
             
-            voteList = new JList(testList);                                     //REMOVE TESTLIST
-            responseList = new JList(testList);                                 //REMOVE TESTLIST
+            voteList = new JList();
+            responseList = new JList();
 
             voteList.setBorder(BorderFactory.createEtchedBorder());
             responseList.setBorder(BorderFactory.createEtchedBorder());
+            voteList.addListSelectionListener(new ListWatcher());
             
             add(voteList);
             add(responseList);
         }
       
+        /**
+         * 
+         */
+        public void updateQuestionList() {
+            voteList.setListData(myClient.getQuestions().toArray());
+        }
+        
+        /**
+         * 
+         */
+        public void setAnswerList(String question) {
+            responseList.setListData(myClient.getAnswers(question).keySet().toArray());
+        }
+        
         /**
          * This method is invoked automatically when repaint occurs in
          * the outer container
@@ -125,6 +146,7 @@ public class ClientGUI extends JFrame {
         public void paintComponent(Graphics g)
         {
             super.paintComponent(g);
+            
         }
     }
     
@@ -206,5 +228,18 @@ public class ClientGUI extends JFrame {
             infoPanel.repaint();
         }
     }
+    
+    /**
+     * 
+     */
+    private class ListWatcher implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (e.getSource().equals(votePanel.voteList)) {
+                votePanel.setAnswerList((String) votePanel.voteList.getSelectedValue());
+            }
+        }
         
+    }
 }
