@@ -136,6 +136,7 @@ public class Client extends Thread
     private void getVotes() {
         try {
             questions = (HashMap<String, Map<String, Integer>>) objIS.readObject();
+            System.out.println("Receiving: " + questions.toString());
         }
         catch (IOException ex) {
             System.out.println("IO Exception : " + ex.getMessage());
