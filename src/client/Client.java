@@ -29,7 +29,7 @@ public class Client extends Thread
     private boolean connected;
     private boolean keepRunning;
     
-    private HashMap<String, Map<String, Integer>> questions;
+    private HashMap<String, HashMap<String, Integer>> questions;
 
     /**
      * Constructor
@@ -83,7 +83,10 @@ public class Client extends Thread
     }
     
 
-    // open streams for communicating with the server
+    /**
+     * Open streams for communicating with the server.
+     * @throws IOException 
+     */
     private void openStreams() throws IOException
     {
         final boolean AUTO_FLUSH = true;
@@ -96,7 +99,10 @@ public class Client extends Thread
         System.out.println("...Streams opened");
     }
 
-    // close streams to server
+    /**
+     * Close streams to server.
+     * @throws IOException 
+     */
     private void closeStreams() throws IOException
     {
         toServer.close();
@@ -122,8 +128,10 @@ public class Client extends Thread
         }
     }
     
-    //An example method that completes a single interaction with the server
-    //In this case, the client doesn't say anything to the server
+    /**
+     * Processes messages received from the server.
+     * @throws IOException 
+     */
     private void processServerMessage() throws IOException
     {
         String messageFromServer = fromServer.readLine();
@@ -135,8 +143,7 @@ public class Client extends Thread
      */
     private void getVotes() {
         try {
-            questions = (HashMap<String, Map<String, Integer>>) objIS.readObject();
-            System.out.println("Receiving: " + questions.toString());
+            questions = (HashMap<String, HashMap<String, Integer>>) objIS.readObject();
         }
         catch (IOException ex) {
             System.out.println("IO Exception : " + ex.getMessage());

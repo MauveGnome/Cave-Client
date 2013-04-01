@@ -139,6 +139,22 @@ public class ClientGUI extends JFrame {
         }
         
         /**
+         * 
+         * @return 
+         */
+        public String getSelectedQuestion() {
+            return voteList.getSelectedValue().toString();
+        }
+        
+        /**
+         * 
+         * @return 
+         */
+        public String getSelectedAnswer() {
+            return responseList.getSelectedValue().toString();
+        }
+        
+        /**
          * This method is invoked automatically when repaint occurs in
          * the outer container
          */
@@ -146,7 +162,6 @@ public class ClientGUI extends JFrame {
         public void paintComponent(Graphics g)
         {
             super.paintComponent(g);
-            
         }
     }
     
@@ -198,7 +213,7 @@ public class ClientGUI extends JFrame {
                         if (myClient.connectToServer()) {
                             optionPanel.connectButton.setText("Disconnect");
                             optionPanel.connectButton.setBackground(Color.GREEN);
-                            infoPanel.addOutput("Connected");
+                            infoPanel.addOutput("Connected to server.");
                         }
                         else {
                             infoPanel.addOutput("Failed to connect");
@@ -208,10 +223,16 @@ public class ClientGUI extends JFrame {
 
                 if (source == optionPanel.getVotesButton) {
                     myClient.sendToServer("GET_VOTES");
+                    votePanel.updateQuestionList();
+                    infoPanel.addOutput("Votes downloaded from server.");
                 }
 
                 if (source == optionPanel.submitButton) {
-                    myClient.sendToServer("SUBMIT");
+                    myClient.sendToServer("SUBMIT,"
+                                          + votePanel.getSelectedQuestion() + ","
+                                          + votePanel.getSelectedAnswer());
+                    infoPanel.addOutput("Vote submitted");
+                    infoPanel.addOutput("Current results: ");                   //Need to add method to return results string.
                 }
 
                 if (source == optionPanel.quitButton) {
