@@ -186,7 +186,20 @@ public class ClientGUI extends JFrame {
         public void addOutput(String newOutput) {
             textArea.append(newOutput + "\n");
         }
-                
+        
+                public String getResultTally() {
+            String output = "";
+            String selectedQuestion = votePanel.voteList.getSelectedValue().toString();
+            Map<String, Integer> answers = myClient.getAnswers(selectedQuestion);
+            
+            for (String eachAnswer : answers.keySet()) {
+                output = output.concat(eachAnswer + ": " + answers.get(eachAnswer) + ", ");
+            }
+  
+            return output;
+        }
+        
+        
         /**
          * This method is invoked automatically when repaint occurs in
          * the outer container
@@ -231,8 +244,9 @@ public class ClientGUI extends JFrame {
                     myClient.sendToServer("SUBMIT,"
                                           + votePanel.getSelectedQuestion() + ","
                                           + votePanel.getSelectedAnswer());
+                    myClient.sendToServer("GET_VOTES");
                     infoPanel.addOutput("Vote submitted");
-                    infoPanel.addOutput("Current results: ");                   //Need to add method to return results string.
+                    infoPanel.addOutput("Current results: " + infoPanel.getResultTally());
                 }
 
                 if (source == optionPanel.quitButton) {
